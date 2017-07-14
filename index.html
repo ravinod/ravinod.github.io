@@ -121,6 +121,7 @@ background: linear-gradient(to right, #ACB6E5, #74ebd5); /* W3C, IE 10+/ Edge, F
   <div class="mySlides fade">
    <h4 align= "center" id="h2"> Impact of Planned Parenthood on Teen Birth Rates</h4>
    <img src="/img/planp.png" style="width:40%">
+    <button onclick="onChange()"> Toggle view to state healthcare reform.</button>
    <div id="viz"> </div>
    <div class="text" id="two">Insert text here about insights in regards to planned parenthood.</div>
  </div>
@@ -145,9 +146,10 @@ background: linear-gradient(to right, #ACB6E5, #74ebd5); /* W3C, IE 10+/ Edge, F
 
 
 <script>
-var mapVar = "hc_pop_rca";
+var mapVar = "TeenBirths";
+var viz = null;
 
-   d3.json("./dataz_fulljson.json", init);
+   d3.json("./fullstatedata_zfip.json", init);
 
    function init(error, data) {
      // d3.csv adds an extra row we don't need
@@ -163,21 +165,22 @@ var mapVar = "hc_pop_rca";
      var config = {
        "select": "#viz",
        "data": data,
-       "groupBy": "state",
+       "groupBy": "geo",
+       "colorBy": "TeenBirths",
        "height": 430,
        "label": function(d) { return d.geo_name },
-       "topojson": "states.json",
+       "topojson": "states_topo.json",
        "topojsonFilter": function(d) {
           var hiddenTopo = ["04000US69", "04000US66", "04000US60", "04000US78", "05000US60050", "05000US60010", "05000US60020", "05000US66010", "05000US69100", "05000US69110", "05000US69120", "05000US69085", "79500US6600100", "04000US02", "04000US15"];
           return hiddenTopo.indexOf(d.id) < 0;
      },
      "tooltipConfig": {
            // exercise for the user: format numbers with commas!
-         body: function(d) { return "Teen Pregnancy and Healthcare Reform: " + d["hc_pop"]; }
+         body: function(d) { return "Teen Pregnancy and Healthcare Reform: " + d["TeenBirths"]; }
      },
        "colorScale": mapVar
      };
-     new d3plus.Geomap()
+     viz = new d3plus.Geomap()
        .config(config)
        .render();
      console.log("RENDER!");
@@ -193,6 +196,17 @@ var mapVar = "hc_pop_rca";
          var bottomPos = names.length - 2 - 1;
         //  bottom.innerText = names.slice(bottomPos, bottomPos + 2).join(", ") + ", and " + names[names.length - 1];
        }
+       function onChange(data) {
+         if (mapVar == "Position")
+         {
+         mapVar = "TeenBirths"
+       }
+       else {
+         mapVar = "Position"
+       }
+       viz.render();
+       console.log(mapVar);
+     };
 var slideIndex = 1;
 showSlides(slideIndex);
 
