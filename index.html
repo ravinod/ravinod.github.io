@@ -14,7 +14,18 @@ body {
   font-family: 'Molengo', Georgia, Times, serif;
 }
 * {box-sizing:border-box}
-
+#button {
+  background-color: #4CAF50; /* Green */
+   border: none;
+   color: white;
+   padding: 15px 32px;
+   text-align: center;
+   text-decoration: none;
+   display: inline-block;
+   font-size: 16px;
+   font-family: 'Molengo', Georgia, Times, serif;
+   font-style: bold;
+}
 #gradientBackground {
 background: linear-gradient(to right, #ACB6E5, #74ebd5); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 
@@ -104,13 +115,11 @@ background: linear-gradient(to right, #ACB6E5, #74ebd5); /* W3C, IE 10+/ Edge, F
 <link rel="stylesheet" href="style.css"/>
   </head>
   <body id="gradientBackground">
-
   <div class="mySlides fade">
   <h1 id="h1" class="animated bounce"> Geographic Impact of Healthcare Reform </h1>
   <img id="imgone"src="/img/earth.png" style="width: 300px; background: transparent;">
   <h2 id="h2" class="shake"> By: Mike Lindle, Rathi Vinod, and Sam Forman </h2>
   </div>
-
   <div class="mySlides fade">
     <h3 align= "center" id="h3">Current State</h3>
     <img src="/img/ahca.png" style="width:300px;">
@@ -121,14 +130,14 @@ background: linear-gradient(to right, #ACB6E5, #74ebd5); /* W3C, IE 10+/ Edge, F
   <div class="mySlides fade">
    <h4 align= "center" id="h2"> Impact of Planned Parenthood on Teen Birth Rates</h4>
    <img src="/img/planp.png" style="width:40%">
-    <button onclick="onChange()"> Toggle view to state healthcare reform.</button>
+    <button id="button" onclick="onChange()"> Toggle view to Medicaid enrollment.</button>
    <div id="viz"> </div>
    <div class="text" id="two">Insert text here about insights in regards to planned parenthood.</div>
  </div>
+
  <div class="mySlides fade">
    <h5 align= "center" id="h2"> Medicaid Beneficiaries Across Regions</h5>
-   <div id="viz2"> </div>
-   <img src="/img/med.png" style="width:40%">
+   <!-- <div id="viz2"> </div> -->
    <div class="text" id="three">Insert text here about insights in regards to impact on Medicaid beneficiaries.</div>
  </div>
  <div class="mySlides fade">
@@ -151,45 +160,53 @@ var data= "./fulldata_fipsz2.json";
 
 new d3plus.Treemap()
 .data(data)
-.groupBy(["TeenBirths","Teen_zscore"])
+.groupBy(["TeenBirths","Medicaid_Enrollment"])
 .render();
 
 var mapVar = "TeenBirths";
-var viz = null;
+var viz = new d3plus.Geomap().select("#viz");
+var data;
 
-   d3.json("./fulldata_fipsz2.json", init);
+   d3.json("./statesonly2.json", init);
 
-   function init(error, data) {
+   function init(error, d) {
      // d3.csv adds an extra row we don't need
     //  data = data.slice(0, data.length - 1);
      // when using d3.csv we need to convert the objects to numbers
      // data.forEach(function(d){ d[mapVar] = +d[mapVar]; });
-     draw(data);
+     data = d;
+     draw();
    }
 
-   function draw(data) {
+   function draw() {
      console.log(data);
      renderText(data);
      var config = {
-       "select": "#viz",
        "data": data,
        "groupBy": "FIPS_code",
        "colorBy": mapVar,
        "height": 430,
        "tiles": false,
-       "label": function(d) { return d.Position },
+       "label": function(d) { return d.State},
        "topojson": "states_topo.json",
        "topojsonFilter": function(d) {
           var hiddenTopo = ["04000US69", "04000US66", "04000US60", "04000US78", "05000US60050", "05000US60010", "05000US60020", "05000US66010", "05000US69100", "05000US69110", "05000US69120", "05000US69085", "79500US6600100", "04000US02", "04000US15"];
           return hiddenTopo.indexOf(d.id) < 0;
-     },
-     "tooltipConfig": {
+        },
+        "tooltipConfig": {
            // exercise for the user: format numbers with commas!
-         body: function(d) { return "Teen Pregnancy and Healthcare Reform: " + d["TeenBirths"]; }
-     },
-       "colorScale": mapVar
+           body: function(d) {
+             if (mapVar == "TeenBirths") {
+               return "Teen Pregnancy: " + d[mapVar] + "<br />Position:" + d["ST_Position"]
+             }
+             else {
+               return "Medicaid Beneficiaries: " + d[mapVar] + "<br />Position:" + d["ST_Position"]
+             }
+           }
+        },
+        "colorScale": mapVar
      };
-     viz = new d3plus.Geomap()
+     viz
        .config(config)
        .render();
      console.log("RENDER!");
@@ -205,15 +222,16 @@ var viz = null;
          var bottomPos = names.length - 2 - 1;
         //  bottom.innerText = names.slice(bottomPos, bottomPos + 2).join(", ") + ", and " + names[names.length - 1];
        }
+
        function onChange(data) {
-         if (mapVar == "Teen_zscore")
+         if (mapVar == "Medicaid_Enrollment")
          {
          mapVar = "TeenBirths"
        }
        else {
-         mapVar = "Teen_zscore"
+         mapVar = "Medicaid_Enrollment"
        }
-       viz.render();
+       draw();
        console.log(mapVar);
      };
 
@@ -238,5 +256,12 @@ function showSlides(n) {
   }
   slides[slideIndex-1].style.display = "block";
 }
+
+var divElement = document.getElementById('viz1500049386795');
+var vizElement = divElement.getElementsByTagName('object')[0];
+vizElement.style.width='100%';vizElement.style.height=(divElement.offsetWidth*0.75)+'px';
+var scriptElement = document.createElement('script');
+ scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';
+ vizElement.parentNode.insertBefore(scriptElement, vizElement);
 
  </script>
