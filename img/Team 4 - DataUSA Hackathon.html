@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<!-- saved from url=(0022)http://localhost:8000/ -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head><body id="gradientBackground"><div class="slideshow-container">
+<link href="./Team 4 - DataUSA Hackathon_files/css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+<link rel="stylesheet" href="./Team 4 - DataUSA Hackathon_files/style.css" type="text/css">
+    
+    <title> Team 4 - DataUSA Hackathon </title>
+  <script src="./Team 4 - DataUSA Hackathon_files/d3plus.v2.0.0-alpha.13.full.min.js.download"></script>
+  <script src="./Team 4 - DataUSA Hackathon_files/d3.v4.min.js.download"></script>
+  <script src="./Team 4 - DataUSA Hackathon_files/topojson.js.download"></script>
+
+<style>
+body {
+  font-family: 'Molengo', Georgia, Times, serif;
+}
+
+* {box-sizing:border-box}
+
+/*#gradientBackground {
+background: linear-gradient(to right, #ACB6E5, #74ebd5); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+}*/
+/* Slideshow container */
+.slideshow-container {
+  position: relative;
+}
+
+.mySlides {
+    display: none;
+}
+#imgone {
+  margin-left: 300px;
+  size: 80%;
+}
+#h1 {
+  margin-left: 250px;
+  margin-top: 200px;
+  font-size: 55px;
+}
+#h2 {
+  margin-left: 271px;
+  margin-top: 10px;
+  font-size: 35px;
+}
+#h3 {
+  font-size: 40px;
+}
+/* Next & previous buttons */
+.prev, .next {
+  cursor: pointer;
+  position: absolute;
+  top: 50%;
+  width: auto;
+  margin-top: -22px;
+  padding: 16px;
+  color: black;
+  font-weight: bold;
+  font-size: 18px;
+  transition: 0.6s ease;
+  border-radius: 0 3px 3px 0;
+}
+
+/* Position the "next button" to the right */
+.next {
+  right: 0;
+  border-radius: 3px 0 0 3px;
+}
+
+/* On hover, add a black background color with a little bit see-through */
+.prev:hover, .next:hover {
+  background-color: rgba(0,0,0,0.5);
+}
+/* Caption text */
+.text {
+  color: black;;
+  font-size: 15px;
+  padding: 8px 12px;
+  width: 100%;
+  /*text-align: center;*/
+}
+#one {
+  margin-left: 300px;
+  margin-top: -150px;
+  font-size: 25px;
+}
+
+
+.fade {
+  -webkit-animation-name: fade;
+  -webkit-animation-duration: 1.5s;
+  animation-name: fade;
+  animation-duration: 1.5s;
+}
+
+@-webkit-keyframes fade {
+  from {opacity: .4}
+  to {opacity: 1}
+}
+
+@keyframes fade {
+  from {opacity: .4}
+  to {opacity: 1}
+}
+</style>
+<link rel="stylesheet" href="./Team 4 - DataUSA Hackathon_files/style.css">
+  
+  
+  <div class="mySlides fade" style="display: block;">
+  <h1 id="h1" class="animated bounce"> Geographic Impact of Healthcare Reform </h1>
+  <img id="imgone" src="./Team 4 - DataUSA Hackathon_files/earth.png" style="width: 300px; background: transparent;">
+  <h2 id="h2" class="shake"> By: Mike Lindle, Rathi Vinod, and Sam Forman </h2>
+  </div>
+  <div class="mySlides fade" style="display: none;">
+    <h3 align="center" id="h3">Current State</h3>
+    <img src="./Team 4 - DataUSA Hackathon_files/ahca.png" style="width:300px;">
+    <div class="text" id="one">The American Healthcare Act will introduce significant cuts <br>to Medicaid, as well as defund Planned Parenthood. Let's
+      take <br> a deeper dive into the impact that this has on our nation.
+    </div>
+  </div>
+  <div class="mySlides fade" style="display: none;">
+   <h4 align="center" id="h2"> Impact of Planned Parenthood on Teen Birth Rates</h4>
+   <img src="./Team 4 - DataUSA Hackathon_files/planp.png" style="width:40%">
+    <button id="button" onclick="onChange()"> Toggle view to Medicaid enrollment.</button>
+   <div id="viz"> <svg style="width: 1503.2px; height: 430px;"></svg></div>
+   <div class="text" id="two">Insert text here about insights in regards to planned parenthood.</div>
+ </div>
+
+ <div class="mySlides fade" style="display: none;">
+   <h5 align="center" id="h2"> Medicaid Beneficiaries Across Regions</h5>
+   <a href="http://localhost:8000/TreeMap.html">
+   <!-- <iframe src="http://localhost:8000/TreeMap.html"></iframe> -->
+   <!-- <div id="viz2"> </div> -->
+   <div class="text" id="three">Deep Dive into Senate Healthcare Reform Statistics</div>
+ </a></div><a href="http://localhost:8000/TreeMap.html">
+ <div class="mySlides fade" style="display: none;">
+    <h4 align="center" id="h2"> Conclusion</h4>
+   <img src="./Team 4 - DataUSA Hackathon_files/conc.png" style="width:40%">
+   <div class="text" id="four">Caption Four</div>
+ </div>
+
+   </a><a class="prev" onclick="plusSlides(-1)">❮</a>
+   <a class="next" onclick="plusSlides(1)">❯</a>
+ </div>
+ <br>
+
+  
+
+
+
+<script>
+var data= "./fulldata_fipsz2.json";
+
+new d3plus.Treemap()
+.data(data)
+.groupBy(["TeenBirths","MedEnrollment_perK"])
+.render();
+
+var mapVar = "TeenBirths";
+var viz = new d3plus.Geomap().select("#viz");
+var data;
+
+   d3.json("./states_medcap.json", init);
+
+   function init(error, d) {
+     // d3.csv adds an extra row we don't need
+    //  data = data.slice(0, data.length - 1);
+     // when using d3.csv we need to convert the objects to numbers
+     // data.forEach(function(d){ d[mapVar] = +d[mapVar]; });
+     data = d;
+     draw();
+   }
+
+   function draw() {
+     console.log(data);
+     renderText(data);
+     var config = {
+       "data": data,
+       "groupBy": "FIPS_code",
+       "colorBy": mapVar,
+       "height": 430,
+       "tiles": false,
+       "label": function(d) { return d.State + ": " + d.ST_Position},
+       "topojson": "states_topo.json",
+       "topojsonFilter": function(d) {
+          var hiddenTopo = ["04000US69", "04000US66", "04000US60", "04000US78", "05000US60050", "05000US60010", "05000US60020", "05000US66010", "05000US69100", "05000US69110", "05000US69120", "05000US69085", "79500US6600100", "04000US02", "04000US15"];
+          return hiddenTopo.indexOf(d.id) < 0;
+        },
+        "tooltipConfig": {
+           // exercise for the user: format numbers with commas!
+           body: function(d) {
+             if (mapVar == "TeenBirths") {
+               return "Teen Pregnancy: " + d[mapVar]
+             }
+             else {
+               return "Medicaid Beneficiaries: " + d[mapVar]
+             }
+           }
+        },
+        "colorScale": mapVar
+     };
+     viz
+       .config(config)
+       .render();
+     console.log("RENDER!");
+   }
+   function renderText(data) {
+         var names = [];
+         for (var i in data) {
+            names.push(data[i].geo_name);
+         }
+         var top = document.getElementById("top");
+         var bottom = document.getElementById("bottom");
+        //  top.innerText = names.slice(0, 2).join(", ") + ", and " + names[2];
+         var bottomPos = names.length - 2 - 1;
+        //  bottom.innerText = names.slice(bottomPos, bottomPos + 2).join(", ") + ", and " + names[names.length - 1];
+       }
+
+       function onChange(data) {
+         if (mapVar == "MedEnrollment_perK")
+         {
+         mapVar = "TeenBirths"
+       }
+       else {
+         mapVar = "MedEnrollment_perK"
+       }
+       draw();
+       console.log(mapVar);
+     };
+
+var slideIndex = 1;
+showSlides(slideIndex);
+
+function plusSlides(n) {
+  showSlides(slideIndex += n);
+}
+
+function currentSlide(n) {
+  showSlides(slideIndex = n);
+}
+
+function showSlides(n) {
+  var i;
+  var slides = document.getElementsByClassName("mySlides");
+  if (n > slides.length) {slideIndex = 1}
+  if (n < 1) {slideIndex = slides.length}
+  for (i = 0; i < slides.length; i++) {
+      slides[i].style.display = "none";
+  }
+  slides[slideIndex-1].style.display = "block";
+}
+
+ </script><svg style="width: 1520px; height: 695px;"><g transform="translate(0, 0)" class="d3plus-viz-title"></g><g transform="translate(0, 0)" class="d3plus-viz-legend"><g class="d3plus-Legend"><g class="d3plus-Circle-group"><g class="d3plus-Circle-shape" opacity="1"></g><g class="d3plus-Circle-image" opacity="1"></g><g class="d3plus-Circle-text" opacity="1"></g><g class="d3plus-Circle-hover"></g><g class="d3plus-Circle-active"></g></g><g class="d3plus-Rect-group"><g class="d3plus-Rect-shape" opacity="1"><rect class="d3plus-Shape d3plus-Rect d3plus-id-ffee8d_1" transform="
+        translate(72.5,684)
+        scale(1)" opacity="1" shape-rendering="geometricPrecision" pointer-events="all" width="10" height="10" x="-5" y="-5" fill="#ffee8d" fill-opacity="1" rx="0" ry="0" stroke="rgb(179, 167, 99)" stroke-dasharray="0" stroke-linecap="butt" stroke-opacity="1" stroke-width="0" vector-effect="non-scaling-stroke"></rect><rect class="d3plus-Shape d3plus-Rect d3plus-id-afd5e8_1" transform="
+        translate(150,684)
+        scale(1)" opacity="1" shape-rendering="geometricPrecision" pointer-events="all" width="10" height="10" x="-5" y="-5" fill="#afd5e8" fill-opacity="1" rx="0" ry="0" stroke="rgb(122, 149, 162)" stroke-dasharray="0" stroke-linecap="butt" stroke-opacity="1" stroke-width="0" vector-effect="non-scaling-stroke"></rect><rect class="d3plus-Shape d3plus-Rect d3plus-id-f7ba77_1" transform="
+        translate(227.5,684)
+        scale(1)" opacity="1" shape-rendering="geometricPrecision" pointer-events="all" width="10" height="10" x="-5" y="-5" fill="#f7ba77" fill-opacity="1" rx="0" ry="0" stroke="rgb(173, 130, 83)" stroke-dasharray="0" stroke-linecap="butt" stroke-opacity="1" stroke-width="0" vector-effect="non-scaling-stroke"></rect><rect class="d3plus-Shape d3plus-Rect d3plus-id-a5c697_1" transform="
+        translate(305,684)
+        scale(1)" opacity="1" shape-rendering="geometricPrecision" pointer-events="all" width="10" height="10" x="-5" y="-5" fill="#a5c697" fill-opacity="1" rx="0" ry="0" stroke="rgb(115, 139, 106)" stroke-dasharray="0" stroke-linecap="butt" stroke-opacity="1" stroke-width="0" vector-effect="non-scaling-stroke"></rect><rect class="d3plus-Shape d3plus-Rect d3plus-id-c5b5e5_1" transform="
+        translate(382.5,684)
+        scale(1)" opacity="1" shape-rendering="geometricPrecision" pointer-events="all" width="10" height="10" x="-5" y="-5" fill="#c5b5e5" fill-opacity="1" rx="0" ry="0" stroke="rgb(138, 127, 160)" stroke-dasharray="0" stroke-linecap="butt" stroke-opacity="1" stroke-width="0" vector-effect="non-scaling-stroke"></rect><rect class="d3plus-Shape d3plus-Rect d3plus-id-d1d392_1" transform="
+        translate(460,684)
+        scale(1)" opacity="1" shape-rendering="geometricPrecision" pointer-events="all" width="10" height="10" x="-5" y="-5" fill="#d1d392" fill-opacity="1" rx="0" ry="0" stroke="rgb(146, 148, 102)" stroke-dasharray="0" stroke-linecap="butt" stroke-opacity="1" stroke-width="0" vector-effect="non-scaling-stroke"></rect><rect class="d3plus-Shape d3plus-Rect d3plus-id-bbefd0_1" transform="
+        translate(537.5,684)
+        scale(1)" opacity="1" shape-rendering="geometricPrecision" pointer-events="all" width="10" height="10" x="-5" y="-5" fill="#bbefd0" fill-opacity="1" rx="0" ry="0" stroke="rgb(131, 167, 146)" stroke-dasharray="0" stroke-linecap="butt" stroke-opacity="1" stroke-width="0" vector-effect="non-scaling-stroke"></rect><rect class="d3plus-Shape d3plus-Rect d3plus-id-e099cf_1" transform="
+        translate(615,684)
+        scale(1)" opacity="1" shape-rendering="geometricPrecision" pointer-events="all" width="10" height="10" x="-5" y="-5" fill="#e099cf" fill-opacity="1" rx="0" ry="0" stroke="rgb(157, 107, 145)" stroke-dasharray="0" stroke-linecap="butt" stroke-opacity="1" stroke-width="0" vector-effect="non-scaling-stroke"></rect><rect class="d3plus-Shape d3plus-Rect d3plus-id-b22200_1" transform="
+        translate(692.5,684)
+        scale(1)" opacity="1" shape-rendering="geometricPrecision" pointer-events="all" width="10" height="10" x="-5" y="-5" fill="#b22200" fill-opacity="1" rx="0" ry="0" stroke="rgb(125, 24, 0)" stroke-dasharray="0" stroke-linecap="butt" stroke-opacity="1" stroke-width="0" vector-effect="non-scaling-stroke"></rect><rect class="d3plus-Shape d3plus-Rect d3plus-id-282f6b_1" transform="
+        translate(770,684)
+        scale(1)" opacity="1" shape-rendering="geometricPrecision" pointer-events="all" width="10" height="10" x="-5" y="-5" fill="#282f6b" fill-opacity="1" rx="0" ry="0" stroke="rgb(28, 33, 75)" stroke-dasharray="0" stroke-linecap="butt" stroke-opacity="1" stroke-width="0" vector-effect="non-scaling-stroke"></rect><rect class="d3plus-Shape d3plus-Rect d3plus-id-eace3f_1" transform="
+        translate(847.5,684)
+        scale(1)" opacity="1" shape-rendering="geometricPrecision" pointer-events="all" width="10" height="10" x="-5" y="-5" fill="#eace3f" fill-opacity="1" rx="0" ry="0" stroke="rgb(164, 144, 44)" stroke-dasharray="0" stroke-linecap="butt" stroke-opacity="1" stroke-width="0" vector-effect="non-scaling-stroke"></rect><rect class="d3plus-Shape d3plus-Rect d3plus-id-b35c1e_1" transform="
+        translate(925,684)
+        scale(1)" opacity="1" shape-rendering="geometricPrecision" pointer-events="all" width="10" height="10" x="-5" y="-5" fill="#b35c1e" fill-opacity="1" rx="0" ry="0" stroke="rgb(125, 64, 21)" stroke-dasharray="0" stroke-linecap="butt" stroke-opacity="1" stroke-width="0" vector-effect="non-scaling-stroke"></rect><rect class="d3plus-Shape d3plus-Rect d3plus-id-224f20_1" transform="
+        translate(1002.5,684)
+        scale(1)" opacity="1" shape-rendering="geometricPrecision" pointer-events="all" width="10" height="10" x="-5" y="-5" fill="#224f20" fill-opacity="1" rx="0" ry="0" stroke="rgb(24, 55, 22)" stroke-dasharray="0" stroke-linecap="butt" stroke-opacity="1" stroke-width="0" vector-effect="non-scaling-stroke"></rect><rect class="d3plus-Shape d3plus-Rect d3plus-id-5f487c_1" transform="
+        translate(1080,684)
+        scale(1)" opacity="1" shape-rendering="geometricPrecision" pointer-events="all" width="10" height="10" x="-5" y="-5" fill="#5f487c" fill-opacity="1" rx="0" ry="0" stroke="rgb(67, 50, 87)" stroke-dasharray="0" stroke-linecap="butt" stroke-opacity="1" stroke-width="0" vector-effect="non-scaling-stroke"></rect><rect class="d3plus-Shape d3plus-Rect d3plus-id-759143_1" transform="
+        translate(1157.5,684)
+        scale(1)" opacity="1" shape-rendering="geometricPrecision" pointer-events="all" width="10" height="10" x="-5" y="-5" fill="#759143" fill-opacity="1" rx="0" ry="0" stroke="rgb(82, 102, 47)" stroke-dasharray="0" stroke-linecap="butt" stroke-opacity="1" stroke-width="0" vector-effect="non-scaling-stroke"></rect><rect class="d3plus-Shape d3plus-Rect d3plus-id-419391_1" transform="
+        translate(1235,684)
+        scale(1)" opacity="1" shape-rendering="geometricPrecision" pointer-events="all" width="10" height="10" x="-5" y="-5" fill="#419391" fill-opacity="1" rx="0" ry="0" stroke="rgb(46, 103, 102)" stroke-dasharray="0" stroke-linecap="butt" stroke-opacity="1" stroke-width="0" vector-effect="non-scaling-stroke"></rect><rect class="d3plus-Shape d3plus-Rect d3plus-id-993c88_1" transform="
+        translate(1312.5,684)
+        scale(1)" opacity="1" shape-rendering="geometricPrecision" pointer-events="all" width="10" height="10" x="-5" y="-5" fill="#993c88" fill-opacity="1" rx="0" ry="0" stroke="rgb(107, 42, 95)" stroke-dasharray="0" stroke-linecap="butt" stroke-opacity="1" stroke-width="0" vector-effect="non-scaling-stroke"></rect><rect class="d3plus-Shape d3plus-Rect d3plus-id-e89c89_1" transform="
+        translate(1390,684)
+        scale(1)" opacity="1" shape-rendering="geometricPrecision" pointer-events="all" width="10" height="10" x="-5" y="-5" fill="#e89c89" fill-opacity="1" rx="0" ry="0" stroke="rgb(162, 109, 96)" stroke-dasharray="0" stroke-linecap="butt" stroke-opacity="1" stroke-width="0" vector-effect="non-scaling-stroke"></rect></g><g class="d3plus-Rect-image" opacity="1"></g><g class="d3plus-Rect-text" opacity="1"></g><g class="d3plus-Rect-hover"></g><g class="d3plus-Rect-active"></g><rect class="d3plus-HitArea d3plus-id-ffee8d_1" fill="transparent" transform="
+        translate(72.5,684)
+        scale(1)" width="67.5" height="12" x="-5" y="-6"></rect><rect class="d3plus-HitArea d3plus-id-afd5e8_1" fill="transparent" transform="
+        translate(150,684)
+        scale(1)" width="67.5" height="12" x="-5" y="-6"></rect><rect class="d3plus-HitArea d3plus-id-f7ba77_1" fill="transparent" transform="
+        translate(227.5,684)
+        scale(1)" width="67.5" height="12" x="-5" y="-6"></rect><rect class="d3plus-HitArea d3plus-id-a5c697_1" fill="transparent" transform="
+        translate(305,684)
+        scale(1)" width="67.5" height="12" x="-5" y="-6"></rect><rect class="d3plus-HitArea d3plus-id-c5b5e5_1" fill="transparent" transform="
+        translate(382.5,684)
+        scale(1)" width="67.5" height="12" x="-5" y="-6"></rect><rect class="d3plus-HitArea d3plus-id-d1d392_1" fill="transparent" transform="
+        translate(460,684)
+        scale(1)" width="67.5" height="12" x="-5" y="-6"></rect><rect class="d3plus-HitArea d3plus-id-bbefd0_1" fill="transparent" transform="
+        translate(537.5,684)
+        scale(1)" width="67.5" height="12" x="-5" y="-6"></rect><rect class="d3plus-HitArea d3plus-id-e099cf_1" fill="transparent" transform="
+        translate(615,684)
+        scale(1)" width="67.5" height="12" x="-5" y="-6"></rect><rect class="d3plus-HitArea d3plus-id-b22200_1" fill="transparent" transform="
+        translate(692.5,684)
+        scale(1)" width="67.5" height="12" x="-5" y="-6"></rect><rect class="d3plus-HitArea d3plus-id-282f6b_1" fill="transparent" transform="
+        translate(770,684)
+        scale(1)" width="67.5" height="12" x="-5" y="-6"></rect><rect class="d3plus-HitArea d3plus-id-eace3f_1" fill="transparent" transform="
+        translate(847.5,684)
+        scale(1)" width="67.5" height="12" x="-5" y="-6"></rect><rect class="d3plus-HitArea d3plus-id-b35c1e_1" fill="transparent" transform="
+        translate(925,684)
+        scale(1)" width="67.5" height="12" x="-5" y="-6"></rect><rect class="d3plus-HitArea d3plus-id-224f20_1" fill="transparent" transform="
+        translate(1002.5,684)
+        scale(1)" width="67.5" height="12" x="-5" y="-6"></rect><rect class="d3plus-HitArea d3plus-id-5f487c_1" fill="transparent" transform="
+        translate(1080,684)
+        scale(1)" width="67.5" height="12" x="-5" y="-6"></rect><rect class="d3plus-HitArea d3plus-id-759143_1" fill="transparent" transform="
+        translate(1157.5,684)
+        scale(1)" width="67.5" height="12" x="-5" y="-6"></rect><rect class="d3plus-HitArea d3plus-id-419391_1" fill="transparent" transform="
+        translate(1235,684)
+        scale(1)" width="67.5" height="12" x="-5" y="-6"></rect><rect class="d3plus-HitArea d3plus-id-993c88_1" fill="transparent" transform="
+        translate(1312.5,684)
+        scale(1)" width="67.5" height="12" x="-5" y="-6"></rect><rect class="d3plus-HitArea d3plus-id-e89c89_1" fill="transparent" transform="
+        translate(1390,684)
+        scale(1)" width="67.5" height="12" x="-5" y="-6"></rect></g></g></g><g class="d3plus-viz-back" transform=""></g><g transform="translate(0, 0)" class="d3plus-viz-total"></g><g transform="translate(0, 0)" class="d3plus-Treemap"><g class="d3plus-Rect-group"><g class="d3plus-Rect-shape" opacity="1"><rect class="d3plus-Shape d3plus-Rect d3plus-id-undefined" transform="
+        translate(760,1)
+        scale(1)" opacity="1" shape-rendering="geometricPrecision" pointer-events="all" width="1516" height="0" x="-758" y="0" fill="#5f487c" fill-opacity="1" rx="0" ry="0" stroke="rgb(67, 50, 87)" stroke-dasharray="0" stroke-linecap="butt" stroke-opacity="1" stroke-width="0" vector-effect="non-scaling-stroke"></rect><rect class="d3plus-Shape d3plus-Rect d3plus-id-undefined" transform="
+        translate(760,1)
+        scale(1)" opacity="1" shape-rendering="geometricPrecision" pointer-events="all" width="1516" height="0" x="-758" y="0" fill="#b22200" fill-opacity="1" rx="0" ry="0" stroke="rgb(125, 24, 0)" stroke-dasharray="0" stroke-linecap="butt" stroke-opacity="1" stroke-width="0" vector-effect="non-scaling-stroke"></rect><rect class="d3plus-Shape d3plus-Rect d3plus-id-undefined" transform="
+        translate(760,1)
+        scale(1)" opacity="1" shape-rendering="geometricPrecision" pointer-events="all" width="1516" height="0" x="-758" y="0" fill="#eace3f" fill-opacity="1" rx="0" ry="0" stroke="rgb(164, 144, 44)" stroke-dasharray="0" stroke-linecap="butt" stroke-opacity="1" stroke-width="0" vector-effect="non-scaling-stroke"></rect><rect class="d3plus-Shape d3plus-Rect d3plus-id-undefined" transform="
+        translate(760,1)
+        scale(1)" opacity="1" shape-rendering="geometricPrecision" pointer-events="all" width="1516" height="0" x="-758" y="0" fill="#b35c1e" fill-opacity="1" rx="0" ry="0" stroke="rgb(125, 64, 21)" stroke-dasharray="0" stroke-linecap="butt" stroke-opacity="1" stroke-width="0" vector-effect="non-scaling-stroke"></rect><rect class="d3plus-Shape d3plus-Rect d3plus-id-undefined" transform="
+        translate(760,1)
+        scale(1)" opacity="1" shape-rendering="geometricPrecision" pointer-events="all" width="1516" height="0" x="-758" y="0" fill="#224f20" fill-opacity="1" rx="0" ry="0" stroke="rgb(24, 55, 22)" stroke-dasharray="0" stroke-linecap="butt" stroke-opacity="1" stroke-width="0" vector-effect="non-scaling-stroke"></rect><rect class="d3plus-Shape d3plus-Rect d3plus-id-undefined" transform="
+        translate(760,1)
+        scale(1)" opacity="1" shape-rendering="geometricPrecision" pointer-events="all" width="1516" height="0" x="-758" y="0" fill="#5f487c" fill-opacity="1" rx="0" ry="0" stroke="rgb(67, 50, 87)" stroke-dasharray="0" stroke-linecap="butt" stroke-opacity="1" stroke-width="0" vector-effect="non-scaling-stroke"></rect><rect class="d3plus-Shape d3plus-Rect d3plus-id-undefined" transform="
+        translate(760,1)
+        scale(1)" opacity="1" shape-rendering="geometricPrecision" pointer-events="all" width="1516" height="0" x="-758" y="0" fill="#759143" fill-opacity="1" rx="0" ry="0" stroke="rgb(82, 102, 47)" stroke-dasharray="0" stroke-linecap="butt" stroke-opacity="1" stroke-width="0" vector-effect="non-scaling-stroke"></rect><rect class="d3plus-Shape d3plus-Rect d3plus-id-undefined" transform="
+        translate(760,1)
+        scale(1)" opacity="1" shape-rendering="geometricPrecision" pointer-events="all" width="1516" height="0" x="-758" y="0" fill="#419391" fill-opacity="1" rx="0" ry="0" stroke="rgb(46, 103, 102)" stroke-dasharray="0" stroke-linecap="butt" stroke-opacity="1" stroke-width="0" vector-effect="non-scaling-stroke"></rect><rect class="d3plus-Shape d3plus-Rect d3plus-id-undefined" transform="
+        translate(760,1)
+        scale(1)" opacity="1" shape-rendering="geometricPrecision" pointer-events="all" width="1516" height="0" x="-758" y="0" fill="#993c88" fill-opacity="1" rx="0" ry="0" stroke="rgb(107, 42, 95)" stroke-dasharray="0" stroke-linecap="butt" stroke-opacity="1" stroke-width="0" vector-effect="non-scaling-stroke"></rect><rect class="d3plus-Shape d3plus-Rect d3plus-id-undefined" transform="
+        translate(760,1)
+        scale(1)" opacity="1" shape-rendering="geometricPrecision" pointer-events="all" width="1516" height="0" x="-758" y="0" fill="#e89c89" fill-opacity="1" rx="0" ry="0" stroke="rgb(162, 109, 96)" stroke-dasharray="0" stroke-linecap="butt" stroke-opacity="1" stroke-width="0" vector-effect="non-scaling-stroke"></rect><rect class="d3plus-Shape d3plus-Rect d3plus-id-undefined" transform="
+        translate(760,1)
+        scale(1)" opacity="1" shape-rendering="geometricPrecision" pointer-events="all" width="1516" height="0" x="-758" y="0" fill="#ffee8d" fill-opacity="1" rx="0" ry="0" stroke="rgb(179, 167, 99)" stroke-dasharray="0" stroke-linecap="butt" stroke-opacity="1" stroke-width="0" vector-effect="non-scaling-stroke"></rect><rect class="d3plus-Shape d3plus-Rect d3plus-id-undefined" transform="
+        translate(760,1)
+        scale(1)" opacity="1" shape-rendering="geometricPrecision" pointer-events="all" width="1516" height="0" x="-758" y="0" fill="#afd5e8" fill-opacity="1" rx="0" ry="0" stroke="rgb(122, 149, 162)" stroke-dasharray="0" stroke-linecap="butt" stroke-opacity="1" stroke-width="0" vector-effect="non-scaling-stroke"></rect><rect class="d3plus-Shape d3plus-Rect d3plus-id-undefined" transform="
+        translate(760,1)
+        scale(1)" opacity="1" shape-rendering="geometricPrecision" pointer-events="all" width="1516" height="0" x="-758" y="0" fill="#f7ba77" fill-opacity="1" rx="0" ry="0" stroke="rgb(173, 130, 83)" stroke-dasharray="0" stroke-linecap="butt" stroke-opacity="1" stroke-width="0" vector-effect="non-scaling-stroke"></rect><rect class="d3plus-Shape d3plus-Rect d3plus-id-undefined" transform="
+        translate(760,1)
+        scale(1)" opacity="1" shape-rendering="geometricPrecision" pointer-events="all" width="1516" height="0" x="-758" y="0" fill="#a5c697" fill-opacity="1" rx="0" ry="0" stroke="rgb(115, 139, 106)" stroke-dasharray="0" stroke-linecap="butt" stroke-opacity="1" stroke-width="0" vector-effect="non-scaling-stroke"></rect><rect class="d3plus-Shape d3plus-Rect d3plus-id-undefined" transform="
+        translate(760,1)
+        scale(1)" opacity="1" shape-rendering="geometricPrecision" pointer-events="all" width="1516" height="0" x="-758" y="0" fill="#c5b5e5" fill-opacity="1" rx="0" ry="0" stroke="rgb(138, 127, 160)" stroke-dasharray="0" stroke-linecap="butt" stroke-opacity="1" stroke-width="0" vector-effect="non-scaling-stroke"></rect><rect class="d3plus-Shape d3plus-Rect d3plus-id-undefined" transform="
+        translate(760,1)
+        scale(1)" opacity="1" shape-rendering="geometricPrecision" pointer-events="all" width="1516" height="0" x="-758" y="0" fill="#d1d392" fill-opacity="1" rx="0" ry="0" stroke="rgb(146, 148, 102)" stroke-dasharray="0" stroke-linecap="butt" stroke-opacity="1" stroke-width="0" vector-effect="non-scaling-stroke"></rect><rect class="d3plus-Shape d3plus-Rect d3plus-id-undefined" transform="
+        translate(760,1)
+        scale(1)" opacity="1" shape-rendering="geometricPrecision" pointer-events="all" width="1516" height="0" x="-758" y="0" fill="#bbefd0" fill-opacity="1" rx="0" ry="0" stroke="rgb(131, 167, 146)" stroke-dasharray="0" stroke-linecap="butt" stroke-opacity="1" stroke-width="0" vector-effect="non-scaling-stroke"></rect><rect class="d3plus-Shape d3plus-Rect d3plus-id-undefined" transform="
+        translate(760,1)
+        scale(1)" opacity="1" shape-rendering="geometricPrecision" pointer-events="all" width="1516" height="0" x="-758" y="0" fill="#e099cf" fill-opacity="1" rx="0" ry="0" stroke="rgb(157, 107, 145)" stroke-dasharray="0" stroke-linecap="butt" stroke-opacity="1" stroke-width="0" vector-effect="non-scaling-stroke"></rect><rect class="d3plus-Shape d3plus-Rect d3plus-id-undefined" transform="
+        translate(760,1)
+        scale(1)" opacity="1" shape-rendering="geometricPrecision" pointer-events="all" width="1516" height="0" x="-758" y="0" fill="#b22200" fill-opacity="1" rx="0" ry="0" stroke="rgb(125, 24, 0)" stroke-dasharray="0" stroke-linecap="butt" stroke-opacity="1" stroke-width="0" vector-effect="non-scaling-stroke"></rect><rect class="d3plus-Shape d3plus-Rect d3plus-id-undefined" transform="
+        translate(760,1)
+        scale(1)" opacity="1" shape-rendering="geometricPrecision" pointer-events="all" width="1516" height="0" x="-758" y="0" fill="#282f6b" fill-opacity="1" rx="0" ry="0" stroke="rgb(28, 33, 75)" stroke-dasharray="0" stroke-linecap="butt" stroke-opacity="1" stroke-width="0" vector-effect="non-scaling-stroke"></rect><rect class="d3plus-Shape d3plus-Rect d3plus-id-undefined" transform="
+        translate(760,1)
+        scale(1)" opacity="1" shape-rendering="geometricPrecision" pointer-events="all" width="1516" height="0" x="-758" y="0" fill="#eace3f" fill-opacity="1" rx="0" ry="0" stroke="rgb(164, 144, 44)" stroke-dasharray="0" stroke-linecap="butt" stroke-opacity="1" stroke-width="0" vector-effect="non-scaling-stroke"></rect><rect class="d3plus-Shape d3plus-Rect d3plus-id-undefined" transform="
+        translate(760,1)
+        scale(1)" opacity="1" shape-rendering="geometricPrecision" pointer-events="all" width="1516" height="0" x="-758" y="0" fill="#b35c1e" fill-opacity="1" rx="0" ry="0" stroke="rgb(125, 64, 21)" stroke-dasharray="0" stroke-linecap="butt" stroke-opacity="1" stroke-width="0" vector-effect="non-scaling-stroke"></rect><rect class="d3plus-Shape d3plus-Rect d3plus-id-undefined" transform="
+        translate(760,1)
+        scale(1)" opacity="1" shape-rendering="geometricPrecision" pointer-events="all" width="1516" height="0" x="-758" y="0" fill="#224f20" fill-opacity="1" rx="0" ry="0" stroke="rgb(24, 55, 22)" stroke-dasharray="0" stroke-linecap="butt" stroke-opacity="1" stroke-width="0" vector-effect="non-scaling-stroke"></rect><rect class="d3plus-Shape d3plus-Rect d3plus-id-undefined" transform="
+        translate(760,1)
+        scale(1)" opacity="1" shape-rendering="geometricPrecision" pointer-events="all" width="1516" height="0" x="-758" y="0" fill="#282f6b" fill-opacity="1" rx="0" ry="0" stroke="rgb(28, 33, 75)" stroke-dasharray="0" stroke-linecap="butt" stroke-opacity="1" stroke-width="0" vector-effect="non-scaling-stroke"></rect><rect class="d3plus-Shape d3plus-Rect d3plus-id-undefined" transform="
+        translate(760,1)
+        scale(1)" opacity="1" shape-rendering="geometricPrecision" pointer-events="all" width="1516" height="0" x="-758" y="0" fill="#759143" fill-opacity="1" rx="0" ry="0" stroke="rgb(82, 102, 47)" stroke-dasharray="0" stroke-linecap="butt" stroke-opacity="1" stroke-width="0" vector-effect="non-scaling-stroke"></rect><rect class="d3plus-Shape d3plus-Rect d3plus-id-undefined" transform="
+        translate(760,1)
+        scale(1)" opacity="1" shape-rendering="geometricPrecision" pointer-events="all" width="1516" height="0" x="-758" y="0" fill="#419391" fill-opacity="1" rx="0" ry="0" stroke="rgb(46, 103, 102)" stroke-dasharray="0" stroke-linecap="butt" stroke-opacity="1" stroke-width="0" vector-effect="non-scaling-stroke"></rect><rect class="d3plus-Shape d3plus-Rect d3plus-id-undefined" transform="
+        translate(760,1)
+        scale(1)" opacity="1" shape-rendering="geometricPrecision" pointer-events="all" width="1516" height="0" x="-758" y="0" fill="#993c88" fill-opacity="1" rx="0" ry="0" stroke="rgb(107, 42, 95)" stroke-dasharray="0" stroke-linecap="butt" stroke-opacity="1" stroke-width="0" vector-effect="non-scaling-stroke"></rect><rect class="d3plus-Shape d3plus-Rect d3plus-id-undefined" transform="
+        translate(760,1)
+        scale(1)" opacity="1" shape-rendering="geometricPrecision" pointer-events="all" width="1516" height="0" x="-758" y="0" fill="#e89c89" fill-opacity="1" rx="0" ry="0" stroke="rgb(162, 109, 96)" stroke-dasharray="0" stroke-linecap="butt" stroke-opacity="1" stroke-width="0" vector-effect="non-scaling-stroke"></rect><rect class="d3plus-Shape d3plus-Rect d3plus-id-undefined" transform="
+        translate(760,1)
+        scale(1)" opacity="1" shape-rendering="geometricPrecision" pointer-events="all" width="1516" height="0" x="-758" y="0" fill="#ffee8d" fill-opacity="1" rx="0" ry="0" stroke="rgb(179, 167, 99)" stroke-dasharray="0" stroke-linecap="butt" stroke-opacity="1" stroke-width="0" vector-effect="non-scaling-stroke"></rect><rect class="d3plus-Shape d3plus-Rect d3plus-id-undefined" transform="
+        translate(760,1)
+        scale(1)" opacity="1" shape-rendering="geometricPrecision" pointer-events="all" width="1516" height="0" x="-758" y="0" fill="#afd5e8" fill-opacity="1" rx="0" ry="0" stroke="rgb(122, 149, 162)" stroke-dasharray="0" stroke-linecap="butt" stroke-opacity="1" stroke-width="0" vector-effect="non-scaling-stroke"></rect><rect class="d3plus-Shape d3plus-Rect d3plus-id-undefined" transform="
+        translate(760,1)
+        scale(1)" opacity="1" shape-rendering="geometricPrecision" pointer-events="all" width="1516" height="0" x="-758" y="0" fill="#f7ba77" fill-opacity="1" rx="0" ry="0" stroke="rgb(173, 130, 83)" stroke-dasharray="0" stroke-linecap="butt" stroke-opacity="1" stroke-width="0" vector-effect="non-scaling-stroke"></rect><rect class="d3plus-Shape d3plus-Rect d3plus-id-undefined" transform="
+        translate(760,1)
+        scale(1)" opacity="1" shape-rendering="geometricPrecision" pointer-events="all" width="1516" height="0" x="-758" y="0" fill="#a5c697" fill-opacity="1" rx="0" ry="0" stroke="rgb(115, 139, 106)" stroke-dasharray="0" stroke-linecap="butt" stroke-opacity="1" stroke-width="0" vector-effect="non-scaling-stroke"></rect><rect class="d3plus-Shape d3plus-Rect d3plus-id-undefined" transform="
+        translate(760,1)
+        scale(1)" opacity="1" shape-rendering="geometricPrecision" pointer-events="all" width="1516" height="0" x="-758" y="0" fill="#c5b5e5" fill-opacity="1" rx="0" ry="0" stroke="rgb(138, 127, 160)" stroke-dasharray="0" stroke-linecap="butt" stroke-opacity="1" stroke-width="0" vector-effect="non-scaling-stroke"></rect><rect class="d3plus-Shape d3plus-Rect d3plus-id-undefined" transform="
+        translate(760,1)
+        scale(1)" opacity="1" shape-rendering="geometricPrecision" pointer-events="all" width="1516" height="0" x="-758" y="0" fill="#d1d392" fill-opacity="1" rx="0" ry="0" stroke="rgb(146, 148, 102)" stroke-dasharray="0" stroke-linecap="butt" stroke-opacity="1" stroke-width="0" vector-effect="non-scaling-stroke"></rect><rect class="d3plus-Shape d3plus-Rect d3plus-id-undefined" transform="
+        translate(760,1)
+        scale(1)" opacity="1" shape-rendering="geometricPrecision" pointer-events="all" width="1516" height="0" x="-758" y="0" fill="#bbefd0" fill-opacity="1" rx="0" ry="0" stroke="rgb(131, 167, 146)" stroke-dasharray="0" stroke-linecap="butt" stroke-opacity="1" stroke-width="0" vector-effect="non-scaling-stroke"></rect><rect class="d3plus-Shape d3plus-Rect d3plus-id-undefined" transform="
+        translate(760,1)
+        scale(1)" opacity="1" shape-rendering="geometricPrecision" pointer-events="all" width="1516" height="0" x="-758" y="0" fill="#e099cf" fill-opacity="1" rx="0" ry="0" stroke="rgb(157, 107, 145)" stroke-dasharray="0" stroke-linecap="butt" stroke-opacity="1" stroke-width="0" vector-effect="non-scaling-stroke"></rect><rect class="d3plus-Shape d3plus-Rect d3plus-id-undefined" transform="
+        translate(760,1)
+        scale(1)" opacity="1" shape-rendering="geometricPrecision" pointer-events="all" width="1516" height="0" x="-758" y="0" fill="#b22200" fill-opacity="1" rx="0" ry="0" stroke="rgb(125, 24, 0)" stroke-dasharray="0" stroke-linecap="butt" stroke-opacity="1" stroke-width="0" vector-effect="non-scaling-stroke"></rect><rect class="d3plus-Shape d3plus-Rect d3plus-id-undefined" transform="
+        translate(760,1)
+        scale(1)" opacity="1" shape-rendering="geometricPrecision" pointer-events="all" width="1516" height="0" x="-758" y="0" fill="#282f6b" fill-opacity="1" rx="0" ry="0" stroke="rgb(28, 33, 75)" stroke-dasharray="0" stroke-linecap="butt" stroke-opacity="1" stroke-width="0" vector-effect="non-scaling-stroke"></rect><rect class="d3plus-Shape d3plus-Rect d3plus-id-undefined" transform="
+        translate(760,1)
+        scale(1)" opacity="1" shape-rendering="geometricPrecision" pointer-events="all" width="1516" height="0" x="-758" y="0" fill="#eace3f" fill-opacity="1" rx="0" ry="0" stroke="rgb(164, 144, 44)" stroke-dasharray="0" stroke-linecap="butt" stroke-opacity="1" stroke-width="0" vector-effect="non-scaling-stroke"></rect><rect class="d3plus-Shape d3plus-Rect d3plus-id-undefined" transform="
+        translate(760,1)
+        scale(1)" opacity="1" shape-rendering="geometricPrecision" pointer-events="all" width="1516" height="0" x="-758" y="0" fill="#b35c1e" fill-opacity="1" rx="0" ry="0" stroke="rgb(125, 64, 21)" stroke-dasharray="0" stroke-linecap="butt" stroke-opacity="1" stroke-width="0" vector-effect="non-scaling-stroke"></rect><rect class="d3plus-Shape d3plus-Rect d3plus-id-undefined" transform="
+        translate(760,1)
+        scale(1)" opacity="1" shape-rendering="geometricPrecision" pointer-events="all" width="1516" height="0" x="-758" y="0" fill="#224f20" fill-opacity="1" rx="0" ry="0" stroke="rgb(24, 55, 22)" stroke-dasharray="0" stroke-linecap="butt" stroke-opacity="1" stroke-width="0" vector-effect="non-scaling-stroke"></rect><rect class="d3plus-Shape d3plus-Rect d3plus-id-undefined" transform="
+        translate(760,1)
+        scale(1)" opacity="1" shape-rendering="geometricPrecision" pointer-events="all" width="1516" height="0" x="-758" y="0" fill="#5f487c" fill-opacity="1" rx="0" ry="0" stroke="rgb(67, 50, 87)" stroke-dasharray="0" stroke-linecap="butt" stroke-opacity="1" stroke-width="0" vector-effect="non-scaling-stroke"></rect><rect class="d3plus-Shape d3plus-Rect d3plus-id-undefined" transform="
+        translate(760,1)
+        scale(1)" opacity="1" shape-rendering="geometricPrecision" pointer-events="all" width="1516" height="0" x="-758" y="0" fill="#759143" fill-opacity="1" rx="0" ry="0" stroke="rgb(82, 102, 47)" stroke-dasharray="0" stroke-linecap="butt" stroke-opacity="1" stroke-width="0" vector-effect="non-scaling-stroke"></rect><rect class="d3plus-Shape d3plus-Rect d3plus-id-undefined" transform="
+        translate(760,1)
+        scale(1)" opacity="1" shape-rendering="geometricPrecision" pointer-events="all" width="1516" height="0" x="-758" y="0" fill="#419391" fill-opacity="1" rx="0" ry="0" stroke="rgb(46, 103, 102)" stroke-dasharray="0" stroke-linecap="butt" stroke-opacity="1" stroke-width="0" vector-effect="non-scaling-stroke"></rect><rect class="d3plus-Shape d3plus-Rect d3plus-id-undefined" transform="
+        translate(760,1)
+        scale(1)" opacity="1" shape-rendering="geometricPrecision" pointer-events="all" width="1516" height="0" x="-758" y="0" fill="#993c88" fill-opacity="1" rx="0" ry="0" stroke="rgb(107, 42, 95)" stroke-dasharray="0" stroke-linecap="butt" stroke-opacity="1" stroke-width="0" vector-effect="non-scaling-stroke"></rect><rect class="d3plus-Shape d3plus-Rect d3plus-id-undefined" transform="
+        translate(760,1)
+        scale(1)" opacity="1" shape-rendering="geometricPrecision" pointer-events="all" width="1516" height="0" x="-758" y="0" fill="#e89c89" fill-opacity="1" rx="0" ry="0" stroke="rgb(162, 109, 96)" stroke-dasharray="0" stroke-linecap="butt" stroke-opacity="1" stroke-width="0" vector-effect="non-scaling-stroke"></rect></g><g class="d3plus-Rect-image" opacity="1"></g><g class="d3plus-Rect-text" opacity="1"></g><g class="d3plus-Rect-hover"></g><g class="d3plus-Rect-active"></g></g></g></svg>
+</body></html>

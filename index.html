@@ -3,33 +3,25 @@
   <head>
   <div class="slideshow-container">
 <link href="https://fonts.googleapis.com/css?family=Molengo" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+<link rel="stylesheet" href="style.css" type="text/css">
     <meta charset="utf-8" />
     <title> Team 4 - DataUSA Hackathon </title>
   <script src="https://d3plus.org/js/d3plus.v2.0.0-alpha.13.full.min.js"></script>
   <script src="https://d3js.org/d3.v4.min.js"></script>
   <script src="https://d3plus.org/js/topojson.js"></script>
+
 <style>
 body {
   font-family: 'Molengo', Georgia, Times, serif;
 }
+
 * {box-sizing:border-box}
-#button {
-  background-color: #4CAF50; /* Green */
-   border: none;
-   color: white;
-   padding: 15px 32px;
-   text-align: center;
-   text-decoration: none;
-   display: inline-block;
-   font-size: 16px;
-   font-family: 'Molengo', Georgia, Times, serif;
-   font-style: bold;
-}
-#gradientBackground {
+
+/*#gradientBackground {
 background: linear-gradient(to right, #ACB6E5, #74ebd5); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 
-}
+}*/
 /* Slideshow container */
 .slideshow-container {
   position: relative;
@@ -39,19 +31,15 @@ background: linear-gradient(to right, #ACB6E5, #74ebd5); /* W3C, IE 10+/ Edge, F
     display: none;
 }
 #imgone {
-  margin-left: 300px;
+  margin-left: 40%;
   size: 80%;
 }
-#h1 {
-  margin-left: 250px;
-  margin-top: 200px;
-  font-size: 55px;
+#ahca {
+  margin-left: 25%;
+  margin-top: 90px;
 }
-#h2 {
-  margin-left: 271px;
-  margin-top: 10px;
-  font-size: 35px;
-}
+
+
 #h3 {
   font-size: 40px;
 }
@@ -89,9 +77,10 @@ background: linear-gradient(to right, #ACB6E5, #74ebd5); /* W3C, IE 10+/ Edge, F
   /*text-align: center;*/
 }
 #one {
-  margin-left: 300px;
+  margin-left: 800px;
   margin-top: -150px;
   font-size: 25px;
+  color: white;
 }
 
 
@@ -117,32 +106,34 @@ background: linear-gradient(to right, #ACB6E5, #74ebd5); /* W3C, IE 10+/ Edge, F
   <body id="gradientBackground">
   <div class="mySlides fade">
   <h1 id="h1" class="animated bounce"> Geographic Impact of Healthcare Reform </h1>
-  <img id="imgone"src="/img/earth.png" style="width: 300px; background: transparent;">
+  <img id="imgone"src="/img/cap.jpg" style="width: 450px; background: transparent;">
   <h2 id="h2" class="shake"> By: Mike Lindle, Rathi Vinod, and Sam Forman </h2>
   </div>
   <div class="mySlides fade">
     <h3 align= "center" id="h3">Current State</h3>
-    <img src="/img/ahca.png" style="width:300px;">
+    <img id="ahca" src="/img/ahca.png" style="width:300px;">
     <div class="text" id="one">The American Healthcare Act will introduce significant cuts <br>to Medicaid, as well as defund Planned Parenthood. Let's
       take <br> a deeper dive into the impact that this has on our nation.
     </div>
   </div>
   <div class="mySlides fade">
-   <h4 align= "center" id="h2"> Impact of Planned Parenthood on Teen Birth Rates</h4>
-   <img src="/img/planp.png" style="width:40%">
-    <button id="button" onclick="onChange()"> Toggle view to Medicaid enrollment.</button>
+   <h4 align= "center" id="h2"> Senator Stance on AHCA vs. Medicaid Enrollment <br> and Teen Births in Home State </h4>
+   <img id="plan" src="/img/planp.png" style="width:20%; margin-top:10px;">
+    <button id="button" onclick="onChange()"> Medicaid Enrollment / Teen Births per 1K</button>
    <div id="viz"> </div>
    <div class="text" id="two">Insert text here about insights in regards to planned parenthood.</div>
  </div>
 
  <div class="mySlides fade">
-   <h5 align= "center" id="h2"> Medicaid Beneficiaries Across Regions</h5>
+   <h5 align= "center" id="h2"> Senator Stance By Teen Pregnancy Rate</h5>
+   <a href= "./TreeMap.html">
+   <!-- <iframe src="http://localhost:8000/TreeMap.html"></iframe> -->
    <!-- <div id="viz2"> </div> -->
-   <div class="text" id="three">Insert text here about insights in regards to impact on Medicaid beneficiaries.</div>
+   <div class="text" id="three">Deep Dive into Senate Healthcare Reform Statistics</div>
  </div>
  <div class="mySlides fade">
-    <h4 align= "center" id="h2"> Conclusion</h4>
-   <img src="/img/conc.png" style="width:40%">
+    <!-- <h4 align= "center" id="h2"> Conclusion</h4> -->
+   <img src="/img/conc.png" style="width:40%; margin-left: 500px;">
    <div class="text" id="four">Caption Four</div>
  </div>
 
@@ -160,7 +151,7 @@ var data= "./fulldata_fipsz2.json";
 
 new d3plus.Treemap()
 .data(data)
-.groupBy(["TeenBirths","Medicaid_Enrollment"])
+.groupBy(["TeenBirths","MedEnrollment_perK"])
 .render();
 
 var mapVar = "TeenBirths";
@@ -187,7 +178,7 @@ var data;
        "colorBy": mapVar,
        "height": 430,
        "tiles": false,
-       "label": function(d) { return d.State},
+       "label": function(d) { return d.State + ": " + d.ST_Position},
        "topojson": "states_topo.json",
        "topojsonFilter": function(d) {
           var hiddenTopo = ["04000US69", "04000US66", "04000US60", "04000US78", "05000US60050", "05000US60010", "05000US60020", "05000US66010", "05000US69100", "05000US69110", "05000US69120", "05000US69085", "79500US6600100", "04000US02", "04000US15"];
@@ -197,10 +188,10 @@ var data;
            // exercise for the user: format numbers with commas!
            body: function(d) {
              if (mapVar == "TeenBirths") {
-               return "Teen Pregnancy: " + d[mapVar] + "<br />Position:" + d["ST_Position"]
+               return "Teen Pregnancy: " + d[mapVar]
              }
              else {
-               return "Medicaid Beneficiaries: " + d[mapVar] + "<br />Position:" + d["ST_Position"]
+               return "Medicaid Beneficiaries: " + d[mapVar]
              }
            }
         },
@@ -224,12 +215,12 @@ var data;
        }
 
        function onChange(data) {
-         if (mapVar == "Medicaid_Enrollment")
+         if (mapVar == "MedEnrollment_perK")
          {
          mapVar = "TeenBirths"
        }
        else {
-         mapVar = "Medicaid_Enrollment"
+         mapVar = "MedEnrollment_perK"
        }
        draw();
        console.log(mapVar);
@@ -256,12 +247,5 @@ function showSlides(n) {
   }
   slides[slideIndex-1].style.display = "block";
 }
-
-// var divElement = document.getElementById('viz1500049386795');
-// var vizElement = divElement.getElementsByTagName('object')[0];
-// vizElement.style.width='100%';vizElement.style.height=(divElement.offsetWidth*0.75)+'px';
-// var scriptElement = document.createElement('script');
-//  scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';
-//  vizElement.parentNode.insertBefore(scriptElement, vizElement);
 
  </script>
