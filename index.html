@@ -107,7 +107,7 @@ background: linear-gradient(to right, #ACB6E5, #74ebd5); /* W3C, IE 10+/ Edge, F
   <div class="mySlides fade">
   <h1 id="h1" class="animated bounce"> Geographic Impact of Healthcare Reform </h1>
   <img id="imgone"src="/img/cap.jpg" style="width: 450px; background: transparent;">
-  <h2 id="h2" class="shake"> By: Mike Lindle, Rathi Vinod, and Sam Forman </h2>
+  <h2 class="shake"> By: Mike Lindle, Rathi Vinod, and Sam Forman </h2>
   </div>
   <div class="mySlides fade">
     <h3 align= "center" id="h3">Current State</h3>
@@ -118,23 +118,29 @@ background: linear-gradient(to right, #ACB6E5, #74ebd5); /* W3C, IE 10+/ Edge, F
   </div>
   <div class="mySlides fade">
    <h4 align= "center" id="h2"> Senator Stance on AHCA vs. Medicaid Enrollment <br> and Teen Births in Home State </h4>
-   <img id="plan" src="/img/planp.png" style="width:20%; margin-top:10px;">
+   <img id="plan" src="/img/planp.png" style="width:20%">
     <button id="button" onclick="onChange()"> Medicaid Enrollment / Teen Births per 1K</button>
    <div id="viz"> </div>
-   <div class="text" id="two">Insert text here about insights in regards to planned parenthood.</div>
+   <div class="text" id="two"></div>
  </div>
 
  <div class="mySlides fade">
-   <h5 align= "center" id="h2"> Senator Stance By Teen Pregnancy Rate</h5>
-   <a href= "./TreeMap.html">
+      <a href= "./TreeMap.html">
+   <h5 align= "center" id="h6"> Senator Stance By Teen Pregnancy Rate</h5>
+   </a>
    <!-- <iframe src="http://localhost:8000/TreeMap.html"></iframe> -->
    <!-- <div id="viz2"> </div> -->
-   <div class="text" id="three">Deep Dive into Senate Healthcare Reform Statistics</div>
+   <!-- <div class="text" id="three">Deep Dive into Senate Healthcare Reform Statistics</div> -->
  </div>
  <div class="mySlides fade">
     <!-- <h4 align= "center" id="h2"> Conclusion</h4> -->
    <img src="/img/conc.png" style="width:40%; margin-left: 500px;">
-   <div class="text" id="four">Caption Four</div>
+   <ul id="list">
+     <li>Healthcare and policy making are complex.</li>
+     <li>Sometimes, policy makers make choices that aren't in the best favor of their constituents. </li>
+     <li>Depending on the issue, however, they can be more responsive.</li>
+  </ul>
+   <!-- <div class="text" id="four">Caption Four</div> -->
  </div>
 
    <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
